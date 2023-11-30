@@ -210,6 +210,10 @@ async function assessCandidateCaching(
 	infoHashesToExclude: string[]
 ): Promise<ResultAssessment> {
 	const { guid, name, tracker } = candidate;
+	logger.info({
+		label: Label.TORZNAB,
+		message: `guid ${guid}, name ${name}, tracker ${tracker}`,
+	});
 	const logReason = createReasonLogger(name, tracker, searchee.name);
 
 	const cacheEntry = await db("decision")

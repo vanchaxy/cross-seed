@@ -75,10 +75,6 @@ function getApikey(url: string) {
 }
 
 function parseTorznabResults(xml: TorznabResults): Candidate[] {
-	logger.info({
-		label: Label.TORZNAB,
-		message: `Result ${JSON.stringify(xml, null, 4)}`,
-	});
 	const items = xml?.rss?.channel?.[0]?.item;
 	if (!items || !Array.isArray(items)) {
 		return [];
