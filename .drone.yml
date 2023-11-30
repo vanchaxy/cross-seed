@@ -1,0 +1,20 @@
+kind: pipeline
+type: kubernetes
+name: default
+
+steps:
+  - name: Build
+    image: plugins/docker
+    settings:
+      dockerfile: Dockerfile
+      username:
+        from_secret: REGISTRY_USERNAME
+      password:
+        from_secret: REGISTRY_PASSWORD
+      registry: registry.ivanchenko.io
+      repo: registry.ivanchenko.io/${DRONE_REPO_NAME}
+      cache_from: registry.ivanchenko.io/${DRONE_REPO_NAME}:main
+      tags:
+        - ${DRONE_BRANCH/\//-}
+        - ${DRONE_BRANCH/\//-}-${DRONE_COMMIT:0:8}
+      mtu: 1000
