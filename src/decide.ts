@@ -141,6 +141,14 @@ async function assessCandidateHelper(
 	) {
 		return { decision: Decision.MATCH_SIZE_ONLY, metafile: candidateMeta };
 	}
+	logger.info({
+		label: Label.TORZNAB,
+		message: `candidateMeta ${JSON.stringify(candidateMeta)}`,
+	});
+	logger.info({
+		label: Label.TORZNAB,
+		message: `searchee ${JSON.stringify(searchee)}`,
+	});
 	return { decision: Decision.FILE_TREE_MISMATCH };
 }
 
