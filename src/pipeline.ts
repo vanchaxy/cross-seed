@@ -21,7 +21,6 @@ import {
 	updateSearchTimestamps,
 } from "./indexers.js";
 import { Label, logger } from "./logger.js";
-import { Metafile } from "./parseTorrent.js";
 import { filterByContent, filterDupes, filterTimestamps } from "./preFilter.js";
 import { sendResultsNotification } from "./pushNotifier.js";
 import { getRuntimeConfig } from "./runtimeConfig.js";

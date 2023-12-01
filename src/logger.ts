@@ -75,7 +75,7 @@ export function logOnce(cacheKey: string, cb: () => void) {
 export function initializeLogger(): void {
 	createAppDir();
 	logger = winston.createLogger({
-		level: "debug",
+		level: "info",
 		format: winston.format.combine(
 			winston.format.timestamp({
 				format: "YYYY-MM-DD HH:mm:ss",
@@ -106,15 +106,15 @@ export function initializeLogger(): void {
 				maxFiles: "14d",
 			}),
 			new DailyRotateFile({
-				filename: "debug.%DATE%.log",
+				filename: "verbose.%DATE%.log",
 				createSymlink: true,
-				symlinkName: "debug.current.log",
+				symlinkName: "verbose.current.log",
 				dirname: join(appDir(), "logs"),
 				maxFiles: "14d",
-				level: "debug",
+				level: "verbose",
 			}),
 			new winston.transports.Console({
-				level: getRuntimeConfig().verbose ? "silly" : "debug",
+				level: getRuntimeConfig().verbose ? "silly" : "info",
 				format: winston.format.combine(
 					winston.format.errors({ stack: true }),
 					winston.format.splat(),
