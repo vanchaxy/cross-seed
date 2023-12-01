@@ -128,10 +128,22 @@ async function assessCandidateHelper(
 		return { decision: Decision.INFO_HASH_ALREADY_EXISTS };
 	}
 	const perfectMatch = compareFileTrees(candidateMeta, searchee);
+	logger.info({
+		label: Label.TORZNAB,
+		message: `candidateMeta ${JSON.stringify(candidateMeta)}`
+	});
+	logger.info({
+		label: Label.TORZNAB,
+		message: `searchee ${JSON.stringify(searchee)}`
+	});
 	if (perfectMatch) {
 		return { decision: Decision.MATCH, metafile: candidateMeta };
 	}
 	if (!searchee.path) {
+		logger.info({
+			label: Label.TORZNAB,
+			message: `FILE_TREE_MISMATCH 1`
+		});
 		return { decision: Decision.FILE_TREE_MISMATCH };
 	}
 	if (
@@ -141,15 +153,12 @@ async function assessCandidateHelper(
 	) {
 		return { decision: Decision.MATCH_SIZE_ONLY, metafile: candidateMeta };
 	}
-	logger.info({
-		label: Label.TORZNAB,
-		message: `candidateMeta ${JSON.stringify(candidateMeta)}`,
-	});
-	logger.info({
-		label: Label.TORZNAB,
-		message: `searchee ${JSON.stringify(searchee)}`,
-	});
-	return { decision: Decision.FILE_TREE_MISMATCH };
+	if (!searchee.path) {
+		logger.info({
+			label: Label.TORZNAB,
+			message: `FILE_TREE_MISMATCH 2`
+		});
+		return { decision: Decision.FILE_TREE_MISMATCH };
 }
 
 function existsInTorrentCache(infoHash: string): boolean {
@@ -222,9 +231,9 @@ async function assessCandidateCaching(
 	infoHashesToExclude: string[]
 ): Promise<ResultAssessment> {
 	const { guid, name, tracker } = candidate;
-		logger.info({
+	logger.info({
 		label: Label.TORZNAB,
-		message: `guid ${guid}, name ${name}, tracker ${tracker}`,
+		message: `guid ${guid}, name ${name}, tracker ${tracker}`
 	});
 	const logReason = createReasonLogger(name, tracker, searchee.name);
 
@@ -250,6 +259,10 @@ async function assessCandidateCaching(
 			guid,
 			infoHashesToExclude
 		);
+		logger.info({
+			label: Label.TORZNAB,
+			message: `name ${name}, tracker ${tracker}, des ${assessment.decision}`
+		});
 		logReason(assessment.decision, false);
 	} else if (
 		(cacheEntry.decision === Decision.MATCH ||
@@ -289,13 +302,17 @@ async function assessCandidateCaching(
 	}
 	// if previously known
 	if (cacheEntry) {
+		logger.info({
+			label: Label.DECIDE,
+			message: `cache decision; ${cacheEntry.decision}`
+		});
 		await db("decision")
 			.where({ id: cacheEntry.id })
 			.update({ last_seen: Date.now() });
 	}
 	logger.info({
 		label: Label.DECIDE,
-		message: `name; ${name}; tracker ${tracker} decision; ${cacheEntry.decision}`,
+		message: `name; ${name}; tracker ${tracker}`
 	});
 	return assessment;
 }
