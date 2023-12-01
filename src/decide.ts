@@ -285,6 +285,10 @@ async function assessCandidateCaching(
 			.where({ id: cacheEntry.id })
 			.update({ last_seen: Date.now() });
 	}
+	logger.info({
+		label: Label.DECIDE,
+		message: `name; ${name}; tracker ${tracker} decision; ${cacheEntry.decision}`,
+	});
 	return assessment;
 }
 
