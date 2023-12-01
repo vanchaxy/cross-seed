@@ -22,6 +22,10 @@ export interface ResultAssessment {
 const createReasonLogger =
 	(Title: string, tracker: string, name: string) =>
 	(decision: Decision, cached): void => {
+		logger.ingo({
+			label: Label.DECIDE,
+			message: `${name} - no match for ${tracker} torrent ${Title} - ${decision}`,
+		});
 		function logReason(reason): void {
 			logger.verbose({
 				label: Label.DECIDE,
@@ -210,6 +214,10 @@ async function assessCandidateCaching(
 	infoHashesToExclude: string[]
 ): Promise<ResultAssessment> {
 	const { guid, name, tracker } = candidate;
+		logger.info({
+		label: Label.TORZNAB,
+		message: `guid ${guid}, name ${name}, tracker ${tracker}`,
+	});
 	const logReason = createReasonLogger(name, tracker, searchee.name);
 
 	const cacheEntry = await db("decision")
