@@ -120,19 +120,19 @@ async function assessCandidateHelper(
 
 	const candidateMeta = result.unwrapOrThrow();
 
-	if (hashesToExclude.includes(candidateMeta.infoHash)) {
+	if (hashesToExclude.includes(candidateMeta.infoHash) &&
+		candidateMeta.announce === searchee.announce) {
 		return { decision: Decision.INFO_HASH_ALREADY_EXISTS };
 	}
 	const perfectMatch = compareFileTrees(candidateMeta, searchee);
 	if (perfectMatch) {
 		return { decision: Decision.MATCH, metafile: candidateMeta };
 	}
-	if (!searchee.path) {
+	if (!searchee.path || !statSync(searchee.path).isDirectory()) {
 		return { decision: Decision.FILE_TREE_MISMATCH };
 	}
 	if (
 		matchMode == MatchMode.RISKY &&
-		!statSync(searchee.path).isDirectory() &&
 		compareFileTreesIgnoringNames(candidateMeta, searchee)
 	) {
 		return { decision: Decision.MATCH_SIZE_ONLY, metafile: candidateMeta };

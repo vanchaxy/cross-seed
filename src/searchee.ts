@@ -13,6 +13,7 @@ export interface File {
 
 export interface Searchee {
 	infoHash?: string; // if searchee is torrent based
+	announce?: string; // if searchee is torrent based
 	path?: string; // if searchee is data based
 	files: File[];
 	name: string;
@@ -46,6 +47,7 @@ function getFilesFromDataRoot(rootPath: string): File[] {
 export function createSearcheeFromMetafile(meta: Metafile): Searchee {
 	return {
 		files: meta.files,
+		announce: meta.announce,
 		infoHash: meta.infoHash,
 		name: meta.name,
 		length: meta.length,
