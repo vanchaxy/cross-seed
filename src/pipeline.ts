@@ -21,6 +21,7 @@ import {
 	updateSearchTimestamps,
 } from "./indexers.js";
 import { Label, logger } from "./logger.js";
+import { Metafile } from "./parseTorrent.js";
 import { filterByContent, filterDupes, filterTimestamps } from "./preFilter.js";
 import { sendResultsNotification } from "./pushNotifier.js";
 import { getRuntimeConfig } from "./runtimeConfig.js";
@@ -180,15 +181,20 @@ export async function searchForLocalTorrentByCriteria(
 	const { maxDataDepth } = getRuntimeConfig();
 
 	let searchees: Searchee[];
-	if (criteria.path) {
+	if (criteria.name || criteria.infoHash) {
+		let meta = await getTorrentByCriteria(criteria)
+		let searchee = createSearcheeFromMetafile(meta);
+		if (meta.isSingleFileTorrent && criteria.path) {
+			searchee.path = criteria.path;
+		}
+		searchees = [searchee];
+	} else {
 		const searcheeResults = await Promise.all(
 			findPotentialNestedRoots(criteria.path, maxDataDepth).map(
 				createSearcheeFromPath
 			)
 		);
 		searchees = searcheeResults.map((t) => t.unwrapOrThrow());
-	} else {
-		searchees = [await getTorrentByCriteria(criteria)];
 	}
 	const hashesToExclude = await getInfoHashesToExclude();
 	let matches = 0;
