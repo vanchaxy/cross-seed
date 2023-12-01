@@ -153,12 +153,12 @@ async function assessCandidateHelper(
 	) {
 		return { decision: Decision.MATCH_SIZE_ONLY, metafile: candidateMeta };
 	}
-	if (!searchee.path) {
-		logger.info({
-			label: Label.TORZNAB,
-			message: `FILE_TREE_MISMATCH 2`
-		});
-		return { decision: Decision.FILE_TREE_MISMATCH };
+
+	logger.info({
+		label: Label.TORZNAB,
+		message: `FILE_TREE_MISMATCH 2`
+	});
+	return { decision: Decision.FILE_TREE_MISMATCH };
 }
 
 function existsInTorrentCache(infoHash: string): boolean {
