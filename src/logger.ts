@@ -111,7 +111,7 @@ export function initializeLogger(): void {
 				symlinkName: "verbose.current.log",
 				dirname: join(appDir(), "logs"),
 				maxFiles: "14d",
-				level: "verbose",
+				level: "silly",
 			}),
 			new winston.transports.Console({
 				level: getRuntimeConfig().verbose ? "silly" : "info",
