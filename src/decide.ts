@@ -120,19 +120,19 @@ async function assessCandidateHelper(
 
 	const candidateMeta = result.unwrapOrThrow();
 
-	if (hashesToExclude.includes(candidateMeta.infoHash) &&
-		candidateMeta.announce === searchee.announce) {
+	if (hashesToExclude.includes(candidateMeta.infoHash)) {
 		return { decision: Decision.INFO_HASH_ALREADY_EXISTS };
 	}
 	const perfectMatch = compareFileTrees(candidateMeta, searchee);
 	if (perfectMatch) {
 		return { decision: Decision.MATCH, metafile: candidateMeta };
 	}
-	if (!searchee.path || !statSync(searchee.path).isDirectory()) {
+	if (!searchee.path) {
 		return { decision: Decision.FILE_TREE_MISMATCH };
 	}
 	if (
 		matchMode == MatchMode.RISKY &&
+		!statSync(searchee.path).isDirectory() &&
 		compareFileTreesIgnoringNames(candidateMeta, searchee)
 	) {
 		return { decision: Decision.MATCH_SIZE_ONLY, metafile: candidateMeta };
@@ -210,10 +210,6 @@ async function assessCandidateCaching(
 	infoHashesToExclude: string[]
 ): Promise<ResultAssessment> {
 	const { guid, name, tracker } = candidate;
-	logger.info({
-		label: Label.TORZNAB,
-		message: `guid ${guid}, name ${name}, tracker ${tracker}`,
-	});
 	const logReason = createReasonLogger(name, tracker, searchee.name);
 
 	const cacheEntry = await db("decision")
@@ -281,11 +277,6 @@ async function assessCandidateCaching(
 			.where({ id: cacheEntry.id })
 			.update({ last_seen: Date.now() });
 	}
-
-		logger.info({
-		label: Label.TORZNAB,
-		message: `decision ${assessment.decision}`,
-	});
 
 	return assessment;
 }

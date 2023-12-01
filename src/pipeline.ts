@@ -182,7 +182,7 @@ export async function searchForLocalTorrentByCriteria(
 
 	let searchees: Searchee[];
 	if (criteria.name || criteria.infoHash) {
-		let meta = await getTorrentByCriteria(criteria)
+		const meta = await getTorrentByCriteria(criteria)
 		let searchee = createSearcheeFromMetafile(meta);
 		if (meta.isSingleFileTorrent && criteria.path) {
 			searchee.path = criteria.path;

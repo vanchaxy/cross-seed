@@ -45,7 +45,6 @@ function sha1(buf: Buffer): string {
 
 export class Metafile {
 	infoHash: string;
-	announce: string;
 	length: number;
 	name: string;
 	pieceLength: number;
@@ -70,7 +69,6 @@ export class Metafile {
 
 		this.raw = raw;
 		this.infoHash = sha1(bencode.encode(raw.info));
-		this.announce = String.fromCharCode.apply(null, raw.announce)
 		this.name = fallback(raw.info["name.utf-8"], raw.info.name).toString();
 		this.pieceLength = raw.info["piece length"];
 
