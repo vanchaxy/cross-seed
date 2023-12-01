@@ -22,7 +22,7 @@ export interface ResultAssessment {
 const createReasonLogger =
 	(Title: string, tracker: string, name: string) =>
 	(decision: Decision, cached): void => {
-		logger.ingo({
+		logger.info({
 			label: Label.DECIDE,
 			message: `${name} - no match for ${tracker} torrent ${Title} - ${decision}`,
 		});
